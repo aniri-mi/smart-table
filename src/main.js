@@ -26,6 +26,8 @@ function collectState() {
   const page = parseInt(state.page ?? 1) || 1;
   return {
     ...state,
+    rowsPerPage,
+    page,
   };
 }
 

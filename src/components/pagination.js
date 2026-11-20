@@ -10,9 +10,9 @@ export const initPagination = (
     // @todo: #2.1 — посчитать количество страниц, объявить переменные и константы
     const pageTemplate = pages.firstElementChild.cloneNode(true);
     pages.firstElementChild.remove();
-    const rowsPerPage = state.rowsPerPage;
+    const rowsPerPage = state.rowsPerPage || 10;
     const pageCount = Math.ceil(data.length / rowsPerPage) || 1;
-    let page = state.page;
+    let page = state.page || 1;
     // @todo: #2.6 — обработать действия
     if (action)
       switch (action.name) {

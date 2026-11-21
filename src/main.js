@@ -11,15 +11,9 @@ import { initPagination } from "./components/pagination.js";
 import { initSorting } from "./components/sorting.js";
 import { initFiltering } from "./components/filtering.js";
 import { initSearching } from "./components/searching.js";
-// @todo: подключение
 
-// Исходные данные используемые в render()
 const { data, ...indexes } = initData(sourceData);
 
-/**
- * Сбор и обработка полей из таблицы
- * @returns {Object}
- */
 function collectState() {
   const state = processFormData(new FormData(sampleTable.container));
   const rowsPerPage = parseInt(state.rowsPerPage) || 10;
@@ -31,14 +25,10 @@ function collectState() {
   };
 }
 
-/**
- * Перерисовка состояния таблицы при любых изменениях
- * @param {HTMLButtonElement?} action
- */
 function render(action) {
-  let state = collectState(); // состояние полей из таблицы
-  let result = [...data]; // копируем для последующего изменения
-  // @todo: использование
+  let state = collectState();
+  let result = [...data];
+
   result = applySearching(result, state, action);
   result = applyFiltering(result, state, action);
   result = applySorting(result, state, action);
@@ -56,8 +46,6 @@ const sampleTable = initTable(
   },
   render,
 );
-
-// @todo: инициализация
 
 const applySearching = initSearching("search");
 

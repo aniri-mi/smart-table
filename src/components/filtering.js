@@ -1,4 +1,4 @@
-import { createComparison, defaultRules } from "../lib/compare.js";
+import { createComparison, defaultRules, rules } from "../lib/compare.js";
 
 export function initFiltering(elements, indexes) {
   // #4.1 — заполнение select-ов
@@ -14,8 +14,11 @@ export function initFiltering(elements, indexes) {
     );
   });
 
-  // #4.3 — компаратор
-  const compare = createComparison(defaultRules);
+  // #4.3 — компаратор с обязательным skipEmptyTargetValues
+  const compare = createComparison({
+    ...defaultRules,
+    skipEmptyTargetValues: rules.skipEmptyTargetValues,
+  });
 
   return (data, state, action) => {
     // #4.2 — очистка поля
@@ -30,7 +33,7 @@ export function initFiltering(elements, indexes) {
       }
     }
 
-    // #4.5 — фильтрация
+    // #4.5
     return data.filter((row) => compare(row, state));
   };
 }

@@ -4,16 +4,17 @@ export const initPagination = (
   { pages, fromRow, toRow, totalRows },
   createPage,
 ) => {
-  // @todo: #2.3 — подготовить шаблон кнопки для страницы и очистить контейнер
+  // #2.3 — подготовить шаблон кнопки ОДИН РАЗ при инициализации
+  const pageTemplate = pages.firstElementChild.cloneNode(true);
+  pages.firstElementChild.remove();
 
   return (data, state, action) => {
-    // @todo: #2.1 — посчитать количество страниц, объявить переменные и константы
-    const pageTemplate = pages.firstElementChild.cloneNode(true);
-    pages.firstElementChild.remove();
+    // #2.1
     const rowsPerPage = state.rowsPerPage || 10;
     const pageCount = Math.ceil(data.length / rowsPerPage) || 1;
     let page = state.page || 1;
-    // @todo: #2.6 — обработать действия
+
+    // #2.6
     if (action)
       switch (action.name) {
         case "prev":
@@ -31,6 +32,7 @@ export const initPagination = (
       }
     page = Math.min(Math.max(1, page), pageCount);
 
+    // #2.4
     const visiblePages = getPages(page, pageCount, 5);
     pages.replaceChildren(
       ...visiblePages.map((pageNumber) => {
@@ -39,10 +41,12 @@ export const initPagination = (
       }),
     );
 
+    // #2.5
     fromRow.textContent = data.length ? (page - 1) * rowsPerPage + 1 : 0;
     toRow.textContent = Math.min(page * rowsPerPage, data.length);
     totalRows.textContent = data.length;
-    // @todo: #2.2 — посчитать сколько строк нужно пропустить и получить срез данных
+
+    // #2.2
     const skip = (page - 1) * rowsPerPage;
     return data.slice(skip, skip + rowsPerPage);
   };

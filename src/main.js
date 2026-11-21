@@ -28,11 +28,19 @@ function collectState() {
 function render(action) {
   let state = collectState();
   let result = [...data];
+  console.log("START", result.length, JSON.stringify(state));
 
   result = applySearching(result, state, action);
+  console.log("after searching", result.length);
+
   result = applyFiltering(result, state, action);
+  console.log("after filtering", result.length);
+
   result = applySorting(result, state, action);
+  console.log("after sorting", result.length);
+
   result = applyPagination(result, state, action);
+  console.log("after pagination", result.length);
 
   sampleTable.render(result);
 }

@@ -14,9 +14,35 @@ export function initFiltering(elements, indexes) {
     );
   });
 
-  // #4.3 — компаратор: первый аргумент — МАССИВ имён правил
-  // defaultRules уже содержит 'skipEmptyTargetValues', поэтому отдельно его дублировать не нужно
+  // #4.3 — компаратор: массив имён правил (defaultRules уже включает arrayAsRange)
   const compare = createComparison(defaultRules);
+
+  // Приводит строку из input к числу или undefined, если пусто/не число
+  const toNumber = (value) => {
+    if (value === undefined || value === null || value === "") return undefined;
+    const num = Number(String(value).replace(/\s/g, "").replace(",", "."));
+    return Number.isNaN(num) ? undefined : num;
+  };
+
+  // Преобразует state формы в state, понятный компаратору:
+  // totalFrom/totalTo -> total: [from, to]
+  const normalizeState = (state) => {
+    const from = toNumber(state.totalFrom);
+    const to = toNumber(state.totalTo);
+
+    // Если оба поля пусты — не добавляем total в state,
+    // чтобы skipEmptyTargetValues не пропустил сравнение,
+    // а точнее — чтобы total вообще не участвовал в фильтрации
+    if (from === undefined && to === undefined) {
+      return state;
+    }
+
+    const { totalFrom, totalTo, ...rest } = state;
+    return {
+      ...rest,
+      total: [from, to],
+    };
+  };
 
   return (data, state, action) => {
     // #4.2 — очистка поля
@@ -32,6 +58,7 @@ export function initFiltering(elements, indexes) {
     }
 
     // #4.5
-    return data.filter((row) => compare(row, state));
+    const normalized = normalizeState(state);
+    return data.filter((row) => compare(row, normalized));
   };
 }

@@ -16,8 +16,8 @@ const { data, ...indexes } = initData(sourceData);
 
 function collectState() {
   const state = processFormData(new FormData(sampleTable.container));
-  const rowsPerPage = parseInt(state.rowsPerPage) || 10;
-  const page = parseInt(state.page ?? 1) || 1;
+  const rowsPerPage = parseInt(state.rowsPerPage, 10) || 10;
+  const page = parseInt(state.page ?? 1, 10) || 1;
   return {
     ...state,
     rowsPerPage,
@@ -28,19 +28,11 @@ function collectState() {
 function render(action) {
   let state = collectState();
   let result = [...data];
-  console.log("START", result.length, JSON.stringify(state));
 
   result = applySearching(result, state, action);
-  console.log("after searching", result.length);
-
   result = applyFiltering(result, state, action);
-  console.log("after filtering", result.length);
-
   result = applySorting(result, state, action);
-  console.log("after sorting", result.length);
-
   result = applyPagination(result, state, action);
-  console.log("after pagination", result.length);
 
   sampleTable.render(result);
 }

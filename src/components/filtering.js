@@ -14,11 +14,9 @@ export function initFiltering(elements, indexes) {
     );
   });
 
-  // #4.3 — компаратор с обязательным skipEmptyTargetValues
-  const compare = createComparison({
-    ...defaultRules,
-    skipEmptyTargetValues: rules.skipEmptyTargetValues,
-  });
+  // #4.3 — компаратор: первый аргумент — МАССИВ имён правил
+  // defaultRules уже содержит 'skipEmptyTargetValues', поэтому отдельно его дублировать не нужно
+  const compare = createComparison(defaultRules);
 
   return (data, state, action) => {
     // #4.2 — очистка поля

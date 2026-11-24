@@ -1,6 +1,3 @@
-import "./fonts/ys-display/fonts.css";
-import "./style.css";
-
 import { initData } from "./data.js";
 import { processFormData } from "./lib/utils.js";
 

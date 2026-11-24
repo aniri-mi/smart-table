@@ -4,17 +4,17 @@ export function initFiltering(elements) {
       if (!elements[elementName]) return;
       elements[elementName].append(
         ...Object.values(indexes[elementName]).map((name) => {
-          const el = document.createElement("option");
-          el.textContent = name;
-          el.value = name;
-          return el;
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          return option;
         }),
       );
     });
   };
 
   const applyFiltering = (query, state, action) => {
-    // очистка поля
+    // #4.2 — очистка поля
     if (action && action.name === "clear") {
       const input = action.parentElement.querySelector("input");
       if (input) {
@@ -26,6 +26,7 @@ export function initFiltering(elements) {
       }
     }
 
+    // #4.5 — формирование параметров фильтра
     const filter = {};
     Object.keys(elements).forEach((key) => {
       const el = elements[key];

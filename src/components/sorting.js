@@ -6,16 +6,19 @@ export function initSorting(columns) {
     let order = null;
 
     if (action && action.name === "sort") {
+      // #3.1
       action.dataset.value = sortMap[action.dataset.value];
       field = action.dataset.field;
       order = action.dataset.value;
 
+      // #3.2 — сброс других колонок
       columns.forEach((column) => {
         if (column.dataset.field !== action.dataset.field) {
           column.dataset.value = "none";
         }
       });
     } else {
+      // #3.3 — восстановление из состояния колонок
       columns.forEach((column) => {
         if (column.dataset.value !== "none") {
           field = column.dataset.field;
@@ -24,7 +27,8 @@ export function initSorting(columns) {
       });
     }
 
-    const sort = field && order && order !== "none" ? `${field}:${order}` : null;
+    const sort =
+      field && order && order !== "none" ? `${field}:${order}` : null;
 
     return sort ? Object.assign({}, query, { sort }) : query;
   };

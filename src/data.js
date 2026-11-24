@@ -1,13 +1,11 @@
 const BASE_URL = "https://webinars.webdev.education-services.ru/sp7-api";
 
 export function initData() {
-  // переменные для кеширования данных
   let sellers;
   let customers;
   let lastResult;
   let lastQuery;
 
-  // функция для приведения строк в тот вид, который нужен нашей таблице
   const mapRecords = (data) =>
     data.map((item) => ({
       id: item.receipt_id,
@@ -17,7 +15,6 @@ export function initData() {
       total: item.total_amount,
     }));
 
-  // функция получения индексов
   const getIndexes = async () => {
     if (!sellers || !customers) {
       [sellers, customers] = await Promise.all([
@@ -25,11 +22,9 @@ export function initData() {
         fetch(`${BASE_URL}/customers`).then((res) => res.json()),
       ]);
     }
-
     return { sellers, customers };
   };
 
-  // функция получения записей о продажах с сервера
   const getRecords = async (query, isUpdated = false) => {
     const qs = new URLSearchParams(query);
     const nextQuery = qs.toString();

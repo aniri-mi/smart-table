@@ -23,6 +23,21 @@ function collectState() {
   };
 }
 
+async function render(action) {
+  let state = collectState();
+  let query = {};
+
+  query = applySearching(query, state, action);
+  query = applyFiltering(query, state, action);
+  query = applySorting(query, state, action);
+  query = applyPagination(query, state, action);
+
+  const { total, items } = await api.getRecords(query);
+
+  updatePagination(total, query);
+  sampleTable.render(items);
+}
+
 const sampleTable = initTable(
   {
     tableTemplate: "table",
@@ -30,7 +45,7 @@ const sampleTable = initTable(
     before: ["search", "header", "filter"],
     after: ["pagination"],
   },
-  (action) => render(action),
+  render,
 );
 
 const applySearching = initSearching("search");
@@ -56,33 +71,14 @@ const { applyPagination, updatePagination } = initPagination(
   },
 );
 
-async function render(action) {
-  const state = collectState();
-  let query = {};
-
-  query = applySearching(query, state, action);
-  query = applyFiltering(query, state, action);
-  query = applySorting(query, state, action);
-  query = applyPagination(query, state, action);
-
-  // при reset формы (action === undefined после setTimeout) сбрасываем кеш
-  const isUpdated = !action;
-
-  const { total, items } = await api.getRecords(query, isUpdated);
-
-  updatePagination(total, query);
-  sampleTable.render(items);
-}
+const appRoot = document.querySelector("#app");
+appRoot.appendChild(sampleTable.container);
 
 async function init() {
   const indexes = await api.getIndexes();
-
   updateIndexes(sampleTable.filter.elements, {
     searchBySeller: indexes.sellers,
   });
 }
 
-const appRoot = document.querySelector("#app");
-appRoot.appendChild(sampleTable.container);
-
-init().then(() => render());
+init().then(render);

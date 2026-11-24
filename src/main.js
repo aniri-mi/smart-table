@@ -29,10 +29,15 @@ async function render(action) {
   query = applySorting(query, state, action);
   query = applyPagination(query, state, action);
 
-  const { total, items } = await api.getRecords(query);
-
-  updatePagination(total, query);
-  sampleTable.render(items);
+  try {
+    const { total, items } = await api.getRecords(query);
+    updatePagination(total, query);
+    sampleTable.render(items);
+  } catch (err) {
+    console.error("Failed to load records:", err);
+    updatePagination(0, query);
+    sampleTable.render([]);
+  }
 }
 
 const sampleTable = initTable(
@@ -72,10 +77,14 @@ const appRoot = document.querySelector("#app");
 appRoot.appendChild(sampleTable.container);
 
 async function init() {
-  const indexes = await api.getIndexes();
-  updateIndexes(sampleTable.filter.elements, {
-    searchBySeller: indexes.sellers,
-  });
+  try {
+    const indexes = await api.getIndexes();
+    updateIndexes(sampleTable.filter.elements, {
+      searchBySeller: indexes.sellers,
+    });
+  } catch (err) {
+    console.error("Failed to load indexes:", err);
+  }
 }
 
-init().then(render);
+init().then(() => render());

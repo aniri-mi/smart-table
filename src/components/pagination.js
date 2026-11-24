@@ -7,13 +7,12 @@ export const initPagination = (
   const pageTemplate = pages.firstElementChild.cloneNode(true);
   pages.firstElementChild.remove();
 
-  let pageCount;
+  let pageCount = 1;
 
   const applyPagination = (query, state, action) => {
     const limit = state.rowsPerPage || 10;
     let page = state.page || 1;
 
-    // #2.6 — обработка действий пагинатора
     if (action) {
       switch (action.name) {
         case "prev":
@@ -35,11 +34,10 @@ export const initPagination = (
     return Object.assign({}, query, { limit, page });
   };
 
-  const updatePagination = (total, { page, limit }) => {
-    pageCount = Math.ceil(total / limit) || 1;
-    const currentPage = Math.min(page, pageCount);
+  const updatePagination = (total, { page = 1, limit = 10 } = {}) => {
+    pageCount = Math.max(1, Math.ceil(total / limit));
+    const currentPage = Math.min(Math.max(1, page), pageCount);
 
-    // #2.4 — отрисовка кнопок страниц
     const visiblePages = getPages(currentPage, pageCount, 5);
     pages.replaceChildren(
       ...visiblePages.map((pageNumber) => {
@@ -48,7 +46,6 @@ export const initPagination = (
       }),
     );
 
-    // #2.5 — статистика
     fromRow.textContent = total ? (currentPage - 1) * limit + 1 : 0;
     toRow.textContent = Math.min(currentPage * limit, total);
     totalRows.textContent = total;
